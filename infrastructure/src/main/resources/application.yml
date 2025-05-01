@@ -1,3 +1,6 @@
+server:
+  port: 8888
+
 application:
   name: "\${spring.application.name}"
 
@@ -10,9 +13,38 @@ spring:
     virtual-host: "\${RABBITMQ_VIRTUAL_HOST:/}"
     username: "\${RABBITMQ_USERNAME:guest}"
     password: "\${RABBITMQ_PASSWORD:guest}"
+  data:
+    redis:
+      host: "\${REDIS_HOST:localhost}"
+      port: "\${REDIS_PORT:6379}"
 
 rabbitmq:
   queues:
     movies:
       create-movie:
-        name: "\${RABBITMQ_QUEUE_SAVE_MOVIE:create-movie-queue}"
+        exchange: "\${RABBITMQ_EXCHANGE_CREATE_MOVIE:movies}"
+        routing-key: "\${RABBITMQ_QUEUE_CREATE_MOVIE:create-movie}"
+        queue: "\${RABBITMQ_QUEUE_CREATE_MOVIE:create-movie-queue}"
+      update-movie:
+        exchange: "\${RABBITMQ_EXCHANGE_UPDATE_MOVIE:movies}"
+        routing-key: "\${RABBITMQ_QUEUE_UPDATE_MOVIE:update-movie}"
+        queue: "\${RABBITMQ_QUEUE_UPDATE_MOVIE:update-movie-queue}"
+
+moviedb-api:
+  url: "\${MOVIEDB_URL:https://api.themoviedb.org/3}"
+  token: "\${MOVIEDB_TOKEN}"
+  endpoints:
+    movie:
+      discover: "\${MOVIEDB_DISCOVER_MOVIE:/discover/movie}"
+
+movies-api:
+    url: "\${MOVIES_API_URL:http://localhost:8080}"
+    endpoints:
+      movie:
+        search: "\${MOVIES_API_SEARCH_MOVIE:/v1/movies/search}"
+
+scheduler:
+  sync-movie:
+    cron: "\${MOVIEDB_SYNC_CRON:0 * * * * *}"
+    enabled: "\${MOVIEDB_SYNC_ENABLED:true}"
+    provider: "\${MOVIEDB_SYNC_PROVIDER:MOVIEDB}"
