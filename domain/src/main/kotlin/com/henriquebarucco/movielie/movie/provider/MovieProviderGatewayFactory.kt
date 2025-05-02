@@ -1,4 +1,4 @@
-package com.henriquebarucco.movielie.movie
+package com.henriquebarucco.movielie.movie.provider
 
 import com.henriquebarucco.movielie.provider.Provider
 

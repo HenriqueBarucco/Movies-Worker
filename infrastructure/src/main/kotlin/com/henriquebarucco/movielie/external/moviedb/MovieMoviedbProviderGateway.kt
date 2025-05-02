@@ -1,13 +1,15 @@
 package com.henriquebarucco.movielie.external.moviedb
 
 import com.henriquebarucco.movielie.database.redis.SyncProgressRepository
+import com.henriquebarucco.movielie.external.moviedb.mapper.toDomain
 import com.henriquebarucco.movielie.movie.Movie
-import com.henriquebarucco.movielie.movie.MovieProviderGateway
+import com.henriquebarucco.movielie.movie.provider.MovieProviderGateway
+import com.henriquebarucco.movielie.movie.provider.MovieReferenceProvider
 import com.henriquebarucco.movielie.provider.Provider
+import com.henriquebarucco.movielie.provider.Provider.MOVIEDB
 import com.henriquebarucco.movielie.shared.utils.Logger.Companion.getLogger
 import org.slf4j.MDC
 import org.springframework.stereotype.Service
-import java.time.LocalDate
 
 @Service
 class MovieMoviedbProviderGateway(
@@ -20,10 +22,10 @@ class MovieMoviedbProviderGateway(
 
     private val logger = getLogger()
 
-    override fun supports(provider: Provider): Boolean = provider == Provider.MOVIEDB
+    override fun supports(provider: Provider): Boolean = provider == MOVIEDB
 
-    override fun sync(): List<Movie> {
-        val current = this.syncProgressRepository.getCurrent()
+    override fun sync(): List<MovieReferenceProvider> {
+        val current = this.syncProgressRepository.getCurrent(MOVIEDB)
 
         MDC.put(SYNC_PROGRESS, "page=${current.page}, startDate=${current.startDate}, endDate=${current.endDate}")
         this.logger.info("[SYNC_MOVIEDB] Starting movie sync for page ${current.page} from ${current.startDate} to ${current.endDate}")
@@ -64,30 +66,48 @@ class MovieMoviedbProviderGateway(
 
         if (current.page < body.totalPages) {
             this.logger.info("[SYNC_MOVIEDB] Advancing to next page (${current.page + 1})")
-            this.syncProgressRepository.advancePage()
+            this.syncProgressRepository.advancePage(MOVIEDB)
         } else {
             this.logger.info("[SYNC_MOVIEDB] Finished current month, moving to next")
-            this.syncProgressRepository.moveToNextMonth()
+            this.syncProgressRepository.moveToNextMonth(MOVIEDB)
         }
 
         val movies =
             body.results
-                .filter { it.posterPath != null }
                 .map { movie ->
-                    Movie(
-                        externalId = movie.id.toString(),
-                        provider = Provider.MOVIEDB.name,
-                        title = movie.title,
-                        originalTitle = movie.originalTitle,
-                        overview = movie.overview,
-                        releaseDate = LocalDate.parse(movie.releaseDate),
-                        poster = movie.posterPath!!,
-                        status = "RELEASED",
+                    MovieReferenceProvider(
+                        id = movie.id.toString(),
+                        provider = MOVIEDB,
                     )
                 }
 
-        this.logger.info("[SYNC_MOVIEDB] Returning ${movies.size} movies with posters")
+        this.logger.info("[SYNC_MOVIEDB] Returning ${movies.size} movies")
         MDC.remove(SYNC_PROGRESS)
         return movies
+    }
+
+    override fun enrich(movieId: String): Movie {
+        this.logger.info("[ENRICHMENT_MOVIEDB] Starting movie enrichment for movie Id $movieId")
+
+        val response =
+            this.moviedbClient.detailsMovie(
+                movieId = movieId,
+            )
+
+        if (response.statusCode.isError) {
+            this.logger.error("[ENRICHMENT_MOVIEDB] Error response from MovieDB: ${response.statusCode}")
+            throw RuntimeException("Error fetching movies: ${response.statusCode}")
+        }
+
+        val body =
+            response.body ?: run {
+                this.logger.warn("[ENRICHMENT_MOVIEDB] Empty response body")
+                throw IllegalStateException("Empty response body")
+            }
+
+        this.logger.info("[ENRICHMENT_MOVIEDB] Movie ID $movieId enriched successfully")
+
+        val movie = body.toDomain()
+        return movie
     }
 }

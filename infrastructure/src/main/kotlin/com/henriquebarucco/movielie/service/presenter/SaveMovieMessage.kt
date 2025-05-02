@@ -7,8 +7,7 @@ import com.henriquebarucco.movielie.service.presenter.dto.VideoDto
 import com.henriquebarucco.movielie.service.presenter.dto.toExternalReferenceDto
 import com.henriquebarucco.movielie.service.presenter.dto.toVideoDto
 
-data class UpdateMovieMessage(
-    val id: String,
+data class SaveMovieMessage(
     @JsonProperty("external_reference")
     val externalReference: ExternalReferenceDto,
     val title: String,
@@ -30,9 +29,8 @@ data class UpdateMovieMessage(
     val keywords: List<String>,
 )
 
-fun Movie.toUpdateMessage(id: String) =
-    UpdateMovieMessage(
-        id = id,
+fun Movie.toSaveMessage() =
+    SaveMovieMessage(
         externalReference = this.externalReference.toExternalReferenceDto(),
         title = this.title,
         originalTitle = this.originalTitle,

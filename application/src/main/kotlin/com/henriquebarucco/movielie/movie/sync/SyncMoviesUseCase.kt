@@ -1,6 +1,6 @@
-package com.henriquebarucco.movielie.movie
+package com.henriquebarucco.movielie.movie.sync
 
 import com.henriquebarucco.movielie.UnitUseCase
-import com.henriquebarucco.movielie.movie.dto.SyncMoviesCommand
+import com.henriquebarucco.movielie.movie.sync.dto.SyncMoviesCommand
 
 abstract class SyncMoviesUseCase : UnitUseCase<SyncMoviesCommand>()

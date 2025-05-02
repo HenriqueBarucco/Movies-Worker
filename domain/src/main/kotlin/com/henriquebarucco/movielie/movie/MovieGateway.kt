@@ -1,5 +1,6 @@
 package com.henriquebarucco.movielie.movie
 
+import com.henriquebarucco.movielie.movie.provider.MovieReferenceProvider
 import com.henriquebarucco.movielie.provider.Provider
 
 interface MovieGateway {
@@ -9,6 +10,10 @@ interface MovieGateway {
         id: String,
         movie: Movie,
     )
+
+    fun save(movie: Movie)
+
+    fun enrich(movieReferenceProvider: MovieReferenceProvider)
 
     fun findByExternalReference(
         externalId: String,

@@ -29,6 +29,14 @@ rabbitmq:
         exchange: "\${RABBITMQ_EXCHANGE_UPDATE_MOVIE:movies}"
         routing-key: "\${RABBITMQ_QUEUE_UPDATE_MOVIE:update-movie}"
         queue: "\${RABBITMQ_QUEUE_UPDATE_MOVIE:update-movie-queue}"
+      enrich-movie:
+        exchange: "\${RABBITMQ_EXCHANGE_ENRICH_MOVIE:movies}"
+        routing-key: "\${RABBITMQ_QUEUE_ENRICH_MOVIE:enrich-movie}"
+        queue: "\${RABBITMQ_QUEUE_ENRICH_MOVIE:enrich-movie-queue}"
+      save-movie:
+        exchange: "\${RABBITMQ_EXCHANGE_SAVE_MOVIE:movies}"
+        routing-key: "\${RABBITMQ_QUEUE_SAVE_MOVIE:save-movie}"
+        queue: "\${RABBITMQ_QUEUE_SAVE_MOVIE:save-movie-queue}"
 
 moviedb-api:
   url: "\${MOVIEDB_URL:https://api.themoviedb.org/3}"
@@ -36,6 +44,7 @@ moviedb-api:
   endpoints:
     movie:
       discover: "\${MOVIEDB_DISCOVER_MOVIE:/discover/movie}"
+      details: "\${MOVIEDB_SEARCH_MOVIE:/movie}"
 
 movies-api:
     url: "\${MOVIES_API_URL:http://localhost:8080}"

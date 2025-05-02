@@ -2,6 +2,7 @@ package com.henriquebarucco.movielie.database.redis
 
 import com.henriquebarucco.movielie.database.redis.entity.SyncProgress
 import com.henriquebarucco.movielie.database.redis.repository.SyncProgressRedisRepository
+import com.henriquebarucco.movielie.provider.Provider
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
@@ -12,12 +13,12 @@ class SyncProgressRepository(
     private val defaultStartDate = LocalDate.of(1900, 1, 1)
     private val defaultEndDate = LocalDate.of(2099, 1, 1)
 
-    fun getCurrent(): SyncProgress =
-        this.redisRepository.findById("progress").orElseGet {
+    fun getCurrent(provider: Provider): SyncProgress =
+        this.redisRepository.findById(provider.name).orElseGet {
             val endDate = defaultStartDate.plusMonths(1).minusDays(1)
             val newProgress =
                 SyncProgress(
-                    id = "progress",
+                    id = provider.name,
                     startDate = defaultStartDate,
                     endDate = endDate,
                     page = 1,
@@ -26,14 +27,14 @@ class SyncProgressRepository(
             newProgress
         }
 
-    fun advancePage() {
-        val progress = getCurrent()
+    fun advancePage(provider: Provider) {
+        val progress = getCurrent(provider)
         progress.page += 1
         this.redisRepository.save(progress)
     }
 
-    fun moveToNextMonth() {
-        val progress = getCurrent()
+    fun moveToNextMonth(provider: Provider) {
+        val progress = getCurrent(provider)
 
         if (progress.startDate >= defaultEndDate) {
             val newStart = defaultStartDate

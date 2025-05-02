@@ -1,7 +1,7 @@
 package com.henriquebarucco.movielie.entrypoint.schedule
 
-import com.henriquebarucco.movielie.movie.SyncMoviesUseCase
-import com.henriquebarucco.movielie.movie.dto.SyncMoviesCommand
+import com.henriquebarucco.movielie.movie.sync.SyncMoviesUseCase
+import com.henriquebarucco.movielie.movie.sync.dto.SyncMoviesCommand
 import com.henriquebarucco.movielie.shared.utils.Logger.Companion.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled

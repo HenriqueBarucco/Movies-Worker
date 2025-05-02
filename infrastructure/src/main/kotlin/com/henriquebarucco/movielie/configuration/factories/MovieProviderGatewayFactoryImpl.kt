@@ -1,7 +1,7 @@
 package com.henriquebarucco.movielie.configuration.factories
 
-import com.henriquebarucco.movielie.movie.MovieProviderGateway
-import com.henriquebarucco.movielie.movie.MovieProviderGatewayFactory
+import com.henriquebarucco.movielie.movie.provider.MovieProviderGateway
+import com.henriquebarucco.movielie.movie.provider.MovieProviderGatewayFactory
 import com.henriquebarucco.movielie.provider.Provider
 import org.springframework.stereotype.Component
 

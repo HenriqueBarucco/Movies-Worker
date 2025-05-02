@@ -13,13 +13,4 @@ data class DiscoverMoviesResponse(
 
 data class DiscoverMoviesResultResponse(
     val id: Int,
-    val title: String,
-    @JsonProperty(value = "original_title")
-    val originalTitle: String,
-    val overview: String,
-    @JsonProperty(value = "release_date")
-    val releaseDate: String,
-    @JsonProperty(value = "poster_path")
-    val posterPath: String?,
-    val popularity: Double,
 )

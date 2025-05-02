@@ -1,23 +1,24 @@
 package com.henriquebarucco.movielie.movie
 
-import java.nio.charset.StandardCharsets
-import java.security.MessageDigest
+import com.henriquebarucco.movielie.movie.enum.Language
+import com.henriquebarucco.movielie.movie.enum.Status
+import com.henriquebarucco.movielie.movie.vo.ExternalReference
+import com.henriquebarucco.movielie.movie.vo.Video
 import java.time.LocalDate
 
 data class Movie(
-    val externalId: String,
-    val provider: String,
+    val externalReference: ExternalReference,
     val title: String,
     val originalTitle: String,
-    val overview: String,
+    val originalLanguage: Language,
     val poster: String,
+    val backdrop: String?,
+    val overview: String,
+    val imdbId: String?,
+    val status: Status,
+    val duration: Int,
     val releaseDate: LocalDate,
-    val status: String,
-) {
-    fun checksum(): String {
-        val input = "$title|$originalTitle|$overview|$releaseDate|$status"
-        val digest = MessageDigest.getInstance("SHA-256")
-        val hashBytes = digest.digest(input.toByteArray(StandardCharsets.UTF_8))
-        return hashBytes.joinToString("") { "%02x".format(it) }
-    }
-}
+    val videos: List<Video>,
+    val genres: List<String>,
+    val keywords: List<String>,
+)
