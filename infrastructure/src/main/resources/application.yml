@@ -58,3 +58,8 @@ scheduler:
     cron: "\${MOVIEDB_SYNC_CRON:0 * * * * *}"
     enabled: "\${MOVIEDB_SYNC_ENABLED:true}"
     provider: "\${MOVIEDB_SYNC_PROVIDER:MOVIEDB}"
+
+logstash:
+  url: "\${LOGSTASH_URL:localhost:5000}"
+  token: "\${LOGSTASH_TOKEN:xxx}"
+  env: "\${ENV:dev}"
