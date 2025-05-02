@@ -24,7 +24,7 @@ class EnrichMovieListener(
     @RabbitListener(
         queues = ["\${rabbitmq.queues.movies.enrich-movie.queue}"],
         errorHandler = "DeadLetterErrorHandler",
-        concurrency = "100",
+        concurrency = "\${rabbitmq.queues.movies.enrich-movie.concurrency}",
     )
     fun enrichMovieMessage(message: Message) {
         val messageBody = json.decodeFromString<EnrichMovieDto>(String(message.body))

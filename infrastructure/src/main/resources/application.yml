@@ -33,6 +33,7 @@ rabbitmq:
         exchange: "\${RABBITMQ_EXCHANGE_ENRICH_MOVIE:movies}"
         routing-key: "\${RABBITMQ_QUEUE_ENRICH_MOVIE:enrich-movie}"
         queue: "\${RABBITMQ_QUEUE_ENRICH_MOVIE:enrich-movie-queue}"
+        concurrency: "\${RABBITMQ_QUEUE_ENRICH_MOVIE_CONCURRENCY:1}"
       save-movie:
         exchange: "\${RABBITMQ_EXCHANGE_SAVE_MOVIE:movies}"
         routing-key: "\${RABBITMQ_QUEUE_SAVE_MOVIE:save-movie}"
